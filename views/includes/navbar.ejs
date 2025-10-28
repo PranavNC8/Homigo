@@ -1,0 +1,63 @@
+<nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top">
+  <div class="container-fluid">
+    <!-- Left: Home icon -->
+    <a class="navbar-brand" href="/listings">
+      <i class="fa-solid fa-house fs-4"></i>
+    </a>
+
+    <!-- Toggler for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <!-- Left links -->
+      <div class="navbar-nav me-auto">
+        <a class="nav-link fw-semibold" href="/listings">Explore</a>
+      </div>
+
+      <!-- Center Search Bar -->
+      <div class="mx-auto d-none d-lg-flex justify-content-center w-100" style="max-width: 760px;">
+        <form class="search-bar d-flex align-items-center px-3 py-2 rounded-pill shadow-sm w-100" 
+              action="/listings" method="GET">
+          <input
+            class="form-control border-0 search-input"
+            type="search"
+            name="q"
+            placeholder="Search by title or location..."
+            aria-label="Search"
+            value="<%= typeof req !== 'undefined' && req.query.q ? req.query.q : '' %>"
+          />
+          <button class="btn search-btn d-flex justify-content-center align-items-center ms-2" type="submit">
+            <i class="fa-solid fa-magnifying-glass text-white"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Right: Auth/Profile -->
+      <div class="navbar-nav ms-auto align-items-center">
+        <% if (!currUser) { %>
+          <a class="nav-link px-3 fw-semibold" href="/signup" style="white-space: nowrap;">Sign up</a>
+          <a class="nav-link px-3 fw-semibold" href="/login" style="white-space: nowrap;">Log in</a>
+        <% } else { %>
+          <div class="dropdown ms-2">
+            <button class="btn btn-light border rounded-pill dropdown-toggle d-flex align-items-center"
+                    type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="white-space: nowrap;">
+              <i class="fa-solid fa-user me-1"></i><%= currUser.username %>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+              <li><a class="dropdown-item" href="/profile">View Profile</a></li>
+              <li><a class="dropdown-item" href="/listings/new">Create Listing</a></li>
+              <li><a class="dropdown-item" href="/mylistings">My Listings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="/logout">Log Out</a></li>
+            </ul>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>

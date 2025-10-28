@@ -1,0 +1,153 @@
+<% layout("/layouts/boilerplate") %>
+
+<body class="bg-light">
+
+  <!-- 🌟 Hero Header -->
+  <header class="text-center my-5">
+    <h1 class="fw-bold" style="color: #fe424d; font-size: 3rem;">
+      Discover Your Next Stay
+    </h1>
+    <p class="text-secondary fs-4">
+      Find and book amazing places across India 🌍
+    </p>
+  </header>
+
+  <!-- 🔍 Filter Bar -->
+  <div class="container mb-5">
+    <div class="bg-white shadow-sm p-3 rounded-4">
+      <h5 class="fw-semibold mb-3 ms-3 text-muted">
+        <i class="bi bi-funnel-fill me-1 text-danger"></i> Filters
+      </h5>
+
+      <div class="d-flex flex-wrap justify-content-center gap-4">
+        <!-- Filter Buttons -->
+        <div class="filter-item" title="Filter by Price">
+          <i class="bi bi-currency-rupee fs-4 text-danger"></i>
+          <span>Price</span>
+        </div>
+        <div class="filter-item" title="Filter by Location">
+          <i class="bi bi-geo-alt fs-4 text-danger"></i>
+          <span>Location</span>
+        </div>
+        <div class="filter-item" title="Filter by Rating">
+          <i class="bi bi-star fs-4 text-danger"></i>
+          <span>Rating</span>
+        </div>
+        <div class="filter-item" title="Popular Listings">
+          <i class="bi bi-fire fs-4 text-danger"></i>
+          <span>Popular</span>
+        </div>
+        <div class="filter-item" title="Pet Friendly">
+          <i class="bi bi-heart fs-4 text-danger"></i>
+          <span>Pet Friendly</span>
+        </div>
+        <div class="filter-item" title="Has Wi-Fi">
+          <i class="bi bi-wifi fs-4 text-danger"></i>
+          <span>Wi-Fi</span>
+        </div>
+        <div class="filter-item" title="Has Swimming Pool">
+          <i class="bi bi-water fs-4 text-danger"></i>
+          <span>Pool</span>
+        </div>
+        <div class="filter-item" title="Air Conditioned">
+          <i class="bi bi-snow fs-4 text-danger"></i>
+          <span>AC</span>
+        </div>
+        <div class="filter-item" title="View All Listings">
+          <i class="bi bi-grid fs-4 text-danger"></i>
+          <span>All</span>
+        </div>
+
+        <!-- Tax Switch -->
+        <div class="taxes toggle d-flex align-items-center ms-3">
+          <div class="form-check form-switch">
+            <input class="form-check-input border-danger" type="checkbox" role="switch" id="switchCheckDefault">
+            <label class="form-check-label fw-semibold text-secondary ms-1" for="switchCheckDefault">
+              Show price after tax
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🏠 Listings Grid -->
+  <div class="container">
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+      <% for (listing of alllistings) { %>
+        <div class="col">
+          <a href="/listings/<%= listing._id %>" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden listing-card">
+              <div class="image-wrapper">
+                <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title text-dark fw-semibold"><%= listing.title %></h5>
+                <p class="card-text text-secondary mb-1">
+                  <i class="bi bi-geo-alt text-danger"></i>
+                  <%= listing.location %>
+                </p>
+                <p class="fw-bold text-success mb-0">
+                  ₹ <%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %> / Day
+                  <i class="gst" style="display:none;"> + 18% GST</i>
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- 🧭 Create Listing Button -->
+  <div class="text-center my-5">
+    <a href="/listings/new" class="btn btn-danger px-5 py-2 rounded-pill shadow-sm">
+      <i class="bi bi-plus-circle"></i> Create New Listing
+    </a>
+  </div>
+
+  <!-- JS -->
+  <script>
+    const taxSwitch = document.getElementById("switchCheckDefault");
+    taxSwitch.addEventListener("click", () => {
+      const gstElements = document.getElementsByClassName("gst");
+      for (let info of gstElements) {
+        info.style.display = (info.style.display !== "inline") ? "inline" : "none";
+      }
+    });
+  </script>
+
+  <!-- Styling -->
+  <style>
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #555;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+    }
+
+    .filter-item:hover {
+      background-color: rgba(254, 66, 77, 0.1);
+      color: #fe424d;
+      transform: translateY(-2px);
+    }
+
+    .taxes .form-check-input {
+      cursor: pointer;
+    }
+
+    .taxes .form-check-input:checked {
+      background-color: #fe424d;
+      border-color: #fe424d;
+    }
+
+    .taxes label {
+      cursor: pointer;
+    }
+  </style>
+</body>
