@@ -51,22 +51,25 @@ module.exports.createListing = async (req, res) => {
     const newListing = new Listing(listing);
     newListing.owner = req.user._id;
 
-    // 🌍 Geocode location
-    const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+    // 🌍 Use OpenStreetMap (Nominatim) for geocoding
+    const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(
       listing.location
     )}`;
+
     const response = await axios.get(geoUrl, {
-      headers: { "User-Agent": "YourAppName/1.0" }, // Required by Nominatim
+      headers: {
+        "User-Agent": "HomigoApp/1.0 (yourname@example.com)", // 👈 must include contact
+      },
     });
 
     if (response.data && response.data.length > 0) {
-      const lat = parseFloat(response.data[0].lat);
-      const lon = parseFloat(response.data[0].lon);
+      const { lat, lon } = response.data[0];
       newListing.geometry = {
         type: "Point",
-        coordinates: [lon, lat],
+        coordinates: [parseFloat(lon), parseFloat(lat)],
       };
     } else {
+      // Default to India if geocoding fails
       newListing.geometry = {
         type: "Point",
         coordinates: [78.9629, 20.5937],
@@ -77,8 +80,8 @@ module.exports.createListing = async (req, res) => {
     req.flash("success", "New listing created successfully!");
     res.redirect(`/listings/${newListing._id}`);
   } catch (err) {
-    console.error("❌ Geocoding error:", err.message);
-    req.flash("error", "Failed to create listing. Try again!");
+    console.error("❌ Geocoding error:", err.response?.status || err.message);
+    req.flash("error", "Geocoding failed. Please try again later.");
     res.redirect("/listings/new");
   }
 };
